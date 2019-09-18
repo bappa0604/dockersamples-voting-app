@@ -3,23 +3,41 @@ services:
   redis:
     image: redis
     container_name: redis
+    networks:
+      - front-end
+      - back-end
   db:
     image: postgres:9.4
     container_name: db
+    networks:
+      - front-end
+      - back-end
   voting-app:
     image: dockersamples/examplevotingapp_vote
+    container_name: voting-app
     ports:
       - '5000:80'
     depends_on:
       - db
+    networks:
+      - front-end
   worker-app:
     image: dockersamples/examplevotingapp_worker
+    container_name: worker-app
     depends_on:
       - redis
       - db
+    networks:
+      - back-end
   resuting-app:
     image: dockersamples/examplevotingapp_result
+    container_name: resulting-app
     ports:
       - '5001:80'
     depends_on:
       - db
+    networks:
+      - front-end
+networks:
+  front-end:
+  back-end:
